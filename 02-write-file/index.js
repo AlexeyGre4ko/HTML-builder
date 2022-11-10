@@ -9,7 +9,7 @@ const absPathToTextFile = path.join(__dirname, 'new-file.txt');
 
 const addf = fs.createWriteStream(absPathToTextFile);
 addf.write(data, 'utf8');
-console.log('Please, input text for new .txt file. Enter exit for stop.');
+console.log('Please, input text for new .txt file. Enter exit / ctrl+c for save.');
 
 addf.on('error', function(error) {
     console.log(error);
@@ -18,8 +18,15 @@ addf.on('error', function(error) {
 const rl = readline.createInterface({
     input: process.stdin,
 });
+
+const stopMassage = () => {
+    console.log('Massage saved)');
+    process.exit(0);
+}
+
 rl.on('line', function(line) {
-    if (line === 'exit') process.exit(0);
+    if (line === 'exit') stopMassage();
     addf.write(line);
+    process.on('SIGINT', () => stopMassage());
 });
 
